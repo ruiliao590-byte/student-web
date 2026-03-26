@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI 指挥官学习路线图</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --border: #1e1e2e;
+  --accent1: #00e5ff;
+  --accent2: #ff4ecd;
+  --accent3: #ffe566;
+  --accent4: #4eff91;
+  --text: #e8e8f0;
+  --muted: #666680;
+  --font-display: 'Noto Serif SC', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-display); min-height: 100vh; }
+
+/* ── HEADER ── */
+.header {
+  position: relative; overflow: hidden;
+  padding: 56px 32px 44px; text-align: center;
+  background: linear-gradient(160deg, #0a0a1f 0%, #0a0a0f 60%);
+  border-bottom: 1px solid var(--border);
+}
+.header::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(0,229,255,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 50%, rgba(255,78,205,0.07) 0%, transparent 70%);
+}
+.header-tag {
+  display: inline-block; font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--accent1);
+  border: 1px solid rgba(0,229,255,0.3); padding: 4px 14px; border-radius: 99px;
+  margin-bottom: 20px;
+}
+.header h1 {
+  font-size: clamp(26px, 5vw, 52px); font-weight: 900; line-height: 1.1;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.header .sub { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
+.header .project-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,229,102,0.08); border: 1px solid rgba(255,229,102,0.25);
+  color: var(--accent3); padding: 6px 16px; border-radius: 99px;
+  font-size: 13px; font-family: var(--font-mono); margin-top: 16px;
+}
+
+/* ── PROGRESS ── */
+.progress-bar-wrap { max-width: 400px; margin: 20px auto 0; }
+.progress-meta { display: flex; justify-content: space-between; font-size: 12px; font-family: var(--font-mono); color: var(--muted); margin-bottom: 6px; }
+.progress-track { height: 6px; background: var(--border); border-radius: 99px; }
+.progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); transition: width 0.5s ease; }
+
+/* ── TABS ── */
+.tabs { display: flex; overflow-x: auto; background: var(--surface); border-bottom: 1px solid var(--border); scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 0 0 auto; padding: 14px 22px; background: transparent;
+  border: none; border-bottom: 2px solid transparent;
+  color: var(--muted); cursor: pointer; font-size: 12px;
+  font-family: var(--font-mono); letter-spacing: 1px;
+  text-transform: uppercase; transition: all 0.2s; white-space: nowrap;
+}
+.tab-btn.active { color: var(--text); }
+
+/* ── CONTENT ── */
+.content { max-width: 720px; margin: 0 auto; padding: 36px 20px 60px; }
+
+.phase-header { margin-bottom: 32px; }
+.phase-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+.phase-title { font-size: 30px; font-weight: 900; margin-bottom: 6px; }
+.phase-desc { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 560px; }
+.phase-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+/* ── MINDSET BANNER ── */
+.mindset-banner {
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 28px;
+  font-size: 13px; line-height: 1.7; font-family: var(--font-mono);
+  background: rgba(255,229,102,0.05); border: 1px solid rgba(255,229,102,0.2);
+  color: #ccc;
+}
+.mindset-banner strong { color: var(--accent3); }
+
+/* ── STEP CARDS ── */
+.steps { display: flex; flex-direction: column; gap: 10px; }
+.step-card {
+  border-radius: 12px; border: 1px solid var(--border);
+  background: var(--surface); overflow: hidden; transition: border-color 0.2s;
+}
+.step-card.done { border-color: var(--accent4); background: #0d1a12; }
+.step-card:hover { border-color: #2e2e44; }
+
+.step-header { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; cursor: pointer; }
+.step-check {
+  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0; margin-top: 1px;
+  border: 1.5px solid #333; background: transparent;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; font-size: 13px; font-weight: 700; color: var(--bg);
+}
+.step-check.checked { background: var(--accent4); border-color: var(--accent4); }
+
+.step-meta { flex: 1; }
+.step-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.step-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.step-title.done-text { color: var(--muted); text-decoration: line-through; }
+.step-toggle { color: var(--muted); font-size: 11px; transition: transform 0.2s; margin-top: 4px; flex-shrink: 0; }
+.step-toggle.open { transform: rotate(180deg); }
+
+.step-body { display: none; padding: 0 18px 18px 56px; border-top: 1px solid var(--border); }
+.step-body.open { display: block; }
+.step-desc { margin: 14px 0 12px; font-size: 14px; color: #aaa; line-height: 1.75; }
+
+/* ── PROMPT BOX ── */
+.prompt-box {
+  background: #0d0d18; border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 8px; padding: 14px 16px; margin: 12px 0;
+}
+.prompt-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--accent1); margin-bottom: 8px; text-transform: uppercase; }
+.prompt-text { font-family: var(--font-mono); font-size: 12px; color: #8ae8ff; line-height: 1.7; white-space: pre-wrap; }
+
+/* ── RESOURCES ── */
+.resources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.resource-tag {
+  font-size: 11px; padding: 3px 10px; border-radius: 99px;
+  background: var(--border); color: var(--muted); font-family: var(--font-mono);
+  text-decoration: none; transition: all 0.2s;
+}
+.resource-tag:hover { background: #2a2a3e; color: var(--text); }
+
+/* ── NAV ── */
+.nav-row { display: flex; justify-content: space-between; margin-top: 32px; gap: 12px; }
+.nav-btn {
+  padding: 11px 22px; border-radius: 8px; font-size: 12px;
+  font-family: var(--font-mono); cursor: pointer; letter-spacing: 1px;
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  transition: all 0.2s;
+}
+.nav-btn:hover:not(:disabled) { border-color: #3a3a5a; color: var(--text); }
+.nav-btn.primary { border: none; font-weight: 600; }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* ── TIPS ── */
+.tips { margin-top: 40px; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+.tips-header { padding: 14px 20px; background: rgba(255,78,205,0.06); border-bottom: 1px solid var(--border); }
+.tips-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent2); }
+.tips-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+.tip { font-size: 13px; color: #aaa; line-height: 1.6; padding-left: 4px; border-left: 2px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-tag">AI 指挥官专属路线</div>
+  <h1>用 AI 构建产品的<br/>完整思维框架</h1>
+  <p class="sub">不背语法 · 学会拆解 · 精准指令 · 持续发布</p>
+  <div class="project-pill">🎯 主线项目：AI 聊天 / 内容生成工具</div>
+  <div class="progress-bar-wrap">
+    <div class="progress-meta">
+      <span id="prog-label">已完成 0 / 16 步</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabs"></div>
+
+<!-- CONTENT -->
+<div class="content" id="content"></div>
+
+<script>
+const phases = [
+  {
+    id: 1,
+    title: "建立心智模型",
+    eyebrow: "第一阶段 · 第 1–2 周",
+    color: "#00e5ff",
+    desc: "在写一行代码之前，先搞懂「系统是怎么思考的」。你的目标不是变成工程师，而是成为能和工程师（AI）高效沟通的产品思考者。",
+    mindset: "🧠 核心心法：所有软件本质上都是 <strong>输入 → 处理 → 输出</strong>。你只需要弄清楚：数据从哪来、怎么变形、去哪里展示。",
+    steps: [
+      {
+        tag: "概念",
+        title: "理解系统架构：前端 / 后端 / 数据库",
+        desc: "不需要背定义。你只需要能回答：用户点击一个按钮之后，数据经历了哪些地方？画一张流程图，比读文档有效10倍。",
+        prompt: `帮我画出一个 AI 聊天工具的系统架构图（用文字描述）：
+- 用户在网页输入问题（前端）
+- 后端接收并转发给 Claude API
+- Claude 返回答案，前端展示
+每个环节用简单中文解释它的职责是什么。`,
+        resources: [{ name: "CS50 Web 课程", url: "https://cs50.harvard.edu/web/" }, { name: "ByteByteGo 图解架构", url: "https://bytebytego.com/" }]
+      },
+      {
+        tag: "概念",
+        title: "数据逻辑：变量、列表、字典",
+        desc: "不需要死记语法。只需要理解三种结构：一个值（变量）、一排值（列表）、有名字的值（字典/对象）。AI 的所有返回数据都是这三种的组合。",
+        prompt: `我有一个 AI 聊天工具，用户发了一条消息。
+请用 Python 字典的格式，展示一条"消息"应该包含哪些字段（比如：发送者、内容、时间戳）。
+然后告诉我，如果要保存一段完整的对话历史，应该用什么数据结构。`,
+        resources: [{ name: "Python Tutor 可视化", url: "https://pythontutor.com/" }]
+      },
+      {
+        tag: "实操",
+        title: "调用你的第一个 AI API",
+        desc: "在 Cursor 里用 Claude 帮你写一个最简单的脚本：发一条消息给 Claude API，打印出回复。不要理解每一行代码，先让它跑起来，建立正反馈。",
+        prompt: `用 Python 帮我写一个最简单的脚本，调用 Anthropic Claude API：
+- 发送一条固定的用户消息："你好，介绍一下自己"
+- 打印出 Claude 的回复内容
+- 使用 claude-sonnet-4-20250514 模型
+- 加上简单的中文注释，解释每一步做了什么`,
+        resources: [{ name: "Anthropic API 文档", url: "https://docs.anthropic.com/" }, { name: "Cursor 编辑器", url: "https://www.cursor.com/" }]
+      },
+      {
+        tag: "思维",
+        title: "学会拆解任务：把大目标分解成 AI 能执行的小步骤",
+        desc: "这是整个路线最核心的技能。一个模糊的需求会让 AI 乱猜；一个精准的任务清单会让 AI 像手术刀一样精确。练习：把「做一个聊天工具」拆解成 10 个具体步骤。",
+        prompt: `我想用 Python + Flask 做一个最简单的 AI 聊天工具网页版。
+请帮我把这个目标拆解成具体的开发步骤（每步不超过2小时完成），
+每步说明：做什么、为什么、完成后能看到什么结果。
+从最简单的能跑起来的版本开始，不要一上来就做复杂功能。`,
+        resources: [{ name: "《番茄工作法》", url: "https://francescocirillo.com/pages/pomodoro-technique" }]
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "构建主线项目 V1",
+    eyebrow: "第二阶段 · 第 3–5 周",
+    color: "#ff4ecd",
+    desc: "动手做出你的第一个 AI 产品原型：一个能在网页上运行的聊天工具。目标不是完美，而是跑通完整链路：输入 → 调用 AI → 展示结果。",
+    mindset: "🚀 核心心法：先做出「能跑」的版本，再迭代。完美是进步的敌人。你的 V1 可以很丑，但必须能用。",
+    steps: [
+      {
+        tag: "搭建",
+        title: "用 Flask 创建后端服务器",
+        desc: "Flask 是 Python 里最简单的后端框架。你只需要理解一件事：它负责「接收请求、处理、返回结果」。把它想象成一个服务员：等待点单 → 去厨房取餐 → 端回来。",
+        prompt: `用 Python Flask 创建一个最简单的后端服务：
+- 有一个 /chat 接口，接收 POST 请求
+- 请求体是 JSON 格式：{"message": "用户消息"}
+- 调用 Claude API 处理消息
+- 返回 JSON：{"reply": "AI回复内容"}
+- 加中文注释解释每个路由的作用
+- 告诉我怎么在本地运行和测试`,
+        resources: [{ name: "Flask 官方文档", url: "https://flask.palletsprojects.com/" }, { name: "Postman API 测试", url: "https://www.postman.com/" }]
+      },
+      {
+        tag: "搭建",
+        title: "用 HTML + JS 创建聊天界面",
+        desc: "前端只需要做三件事：展示对话历史、获取用户输入、把消息发给后端并展示回复。先用最简单的 HTML 实现，不需要 React。",
+        prompt: `帮我创建一个聊天界面的单页 HTML 文件：
+- 顶部显示"AI 助手"标题
+- 中间是对话历史区域（用户消息靠右、AI消息靠左）
+- 底部是输入框 + 发送按钮
+- 点击发送后，用 fetch() 调用本地后端 /chat 接口
+- 展示 AI 的回复，期间显示"思考中..."
+- 界面简洁好看，用深色主题`,
+        resources: [{ name: "MDN Fetch API", url: "https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API" }]
+      },
+      {
+        tag: "升级",
+        title: "加入对话记忆：让 AI 记住上下文",
+        desc: "现在的 AI 每次都是「失忆」的。要让它记住对话，你需要把历史消息一起发给 API。这个改动只需要修改几行代码，但效果天差地别。",
+        prompt: `我的聊天工具目前每次发消息都是独立的，AI 不记得之前的对话。
+请帮我修改后端代码，实现对话记忆：
+- 维护一个 messages 列表，保存完整对话历史
+- 每次请求时，把历史一起发给 Claude API
+- 解释 Claude API 的 messages 格式中 role: user 和 role: assistant 的区别
+- 告诉我对话记忆的长度限制在哪里、怎么处理`,
+        resources: [{ name: "Claude API Messages 文档", url: "https://docs.anthropic.com/en/api/messages" }]
+      },
+      {
+        tag: "部署",
+        title: "把项目部署上线，获得真实 URL",
+        desc: "把本地项目发布到互联网，让别人也能用。这是 product 思维里最重要的一步——从「在我电脑上能跑」到「任何人都能访问」。",
+        prompt: `我有一个 Python Flask 的 AI 聊天工具，想部署到 Railway 上。
+请给我完整的部署步骤：
+1. 需要创建哪些配置文件（requirements.txt、Procfile 等）
+2. 怎么在 Railway 上创建项目并连接 GitHub
+3. 怎么设置环境变量（比如 API Key 不能暴露在代码里）
+4. 部署后怎么验证是否成功`,
+        resources: [{ name: "Railway 部署平台", url: "https://railway.app/" }, { name: "Render（备选）", url: "https://render.com/" }]
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Debug 思维与迭代",
+    eyebrow: "第三阶段 · 第 6–8 周",
+    color: "#ffe566",
+    desc: "出错是正常的。真正的技能不是「不出错」，而是「看到报错不慌，能快速定位问题」。这一阶段专门训练调试思维，同时给产品加上关键功能。",
+    mindset: "🔍 核心心法：Debug 的本质是「提问」。不要随机乱改代码——先读懂报错信息，再问 AI「这个报错说明哪里出了问题」。",
+    steps: [
+      {
+        tag: "调试",
+        title: "建立 Debug 工作流：读错误 → 定位 → 修复",
+        desc: "学会用三步法处理任何报错：①完整复制错误信息；②找到是哪个文件哪一行；③问 AI「这个错误的根本原因是什么，不是表面症状」。",
+        prompt: `我遇到了这个报错（把你的真实报错粘贴在这里）。
+请帮我分析：
+1. 这个错误的根本原因是什么？
+2. 在哪个文件哪一行出了问题？
+3. 修复方案是什么？给我修改后的完整代码
+4. 我应该怎么预防这类错误？`,
+        resources: [{ name: "Python 报错大全", url: "https://docs.python.org/zh-cn/3/library/exceptions.html" }]
+      },
+      {
+        tag: "升级",
+        title: "加入 System Prompt：让 AI 扮演特定角色",
+        desc: "System Prompt 是你对 AI 行为最强大的控制方式。你可以定义 AI 的人格、知识范围、回答风格。这是把通用 AI 变成专属工具的核心技术。",
+        prompt: `请帮我给聊天工具加上 System Prompt 功能：
+- 在界面上加一个"角色设置"输入框
+- 用户可以输入比如："你是一个严格的代码审查员，只用中文回复，回答要简洁"
+- 这个设置作为 system 参数传给 Claude API
+- 展示修改后的完整前后端代码
+- 另外：帮我写3个有趣的 System Prompt 示例，供我参考`,
+        resources: [{ name: "Anthropic Prompt 工程指南", url: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" }]
+      },
+      {
+        tag: "升级",
+        title: "加入用户输入验证与错误处理",
+        desc: "真实用户会做各种你意想不到的事：发空消息、疯狂点击、网络断开。加入基本的验证和友好的错误提示，是产品从玩具到工具的分水岭。",
+        prompt: `帮我给聊天工具加上健壮的错误处理：
+前端需要：
+- 输入框为空时，不允许发送
+- 发送中禁用按钮，防止重复提交
+- API 请求失败时显示友好提示（不是技术报错）
+
+后端需要：
+- 验证请求体格式是否正确
+- API Key 无效时返回有意义的错误信息
+- 用 try/except 捕获所有可能的异常
+
+给我完整的修改代码。`,
+        resources: [{ name: "HTTP 状态码含义", url: "https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API" }]
+      },
+      {
+        tag: "思维",
+        title: "学会写精准的 AI 指令（Prompt Engineering）",
+        desc: "给 AI 的指令质量，直接决定产品质量的上限。学会五个核心技巧：角色设定、给例子、限制范围、要求格式、分步骤。",
+        prompt: `我想让我的 AI 工具帮用户生成"小红书风格的产品文案"。
+请帮我写一个高质量的 System Prompt，要求：
+1. 定义 AI 的写作风格和人设
+2. 给出2个输入/输出示例（few-shot）
+3. 限制回复格式：标题 + 正文 + 5个标签
+4. 说明什么情况下应该拒绝生成
+
+然后分析：为什么这个 Prompt 比"帮我写小红书文案"效果好10倍？`,
+        resources: [{ name: "Learn Prompting", url: "https://learnprompting.org/zh-Hans" }, { name: "Anthropic Prompt 库", url: "https://docs.anthropic.com/en/prompt-library/library" }]
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: "从原型到产品",
+    eyebrow: "第四阶段 · 第 2–3 个月",
+    color: "#4eff91",
+    desc: "把你的 AI 工具打磨成一个真正可以给别人用的产品。这一阶段关注：数据持久化、用户体验、以及如何用 AI 加速你自己的开发速度。",
+    mindset: "🎯 核心心法：你的竞争力不是代码能力，而是「用 AI 把想法变成产品的速度」。每一周都应该有新版本上线。",
+    steps: [
+      {
+        tag: "数据",
+        title: "加入数据库：保存对话历史",
+        desc: "目前对话记录刷新就消失了。用 SQLite（本地）或 Supabase（云端）保存数据，让用户能回看历史对话。理解一个核心概念：增删改查（CRUD）。",
+        prompt: `帮我给聊天工具加上对话历史保存功能，使用 SQLite：
+1. 创建 conversations 表和 messages 表（给我建表的 SQL 语句）
+2. 每次对话结束后自动保存到数据库
+3. 加一个 /history 接口，返回最近10条对话
+4. 前端加一个侧边栏，展示历史对话列表，点击可以恢复
+5. 解释为什么要分两张表，不是把所有消息存在一张表`,
+        resources: [{ name: "Supabase（云端数据库）", url: "https://supabase.com/" }, { name: "SQLite 文档", url: "https://www.sqlite.org/" }]
+      },
+      {
+        tag: "产品",
+        title: "用 AI 生成 UI：Cursor + v0.dev 工作流",
+        desc: "不需要手写 CSS。用 v0.dev 描述你想要的界面，生成漂亮的组件代码，再让 Cursor 帮你集成进项目。这是 AI 指挥官最高效的 UI 开发方式。",
+        prompt: `我要用 v0.dev 生成一个聊天界面组件。
+帮我写一段详细的描述（英文），说明我想要的界面：
+- 深色主题，科技感
+- 左侧对话列表，右侧聊天区域
+- 用户消息和 AI 消息有不同的气泡样式
+- 底部输入框带发送按钮和字数统计
+- 支持 Markdown 格式渲染
+
+（写成适合直接粘贴进 v0.dev 的 prompt 格式）`,
+        resources: [{ name: "v0.dev UI 生成", url: "https://v0.dev/" }, { name: "Cursor AI 编辑器", url: "https://www.cursor.com/" }]
+      },
+      {
+        tag: "发布",
+        title: "给产品加上用户系统",
+        desc: "当你想让不同用户有各自的对话历史时，就需要「登录」功能。用 Clerk 或 Supabase Auth 可以在1小时内加上完整的用户系统，不需要自己写认证逻辑。",
+        prompt: `我想给 Flask AI 聊天工具加上最简单的用户登录功能，使用 Supabase Auth：
+1. 支持邮箱 + 密码注册/登录
+2. 登录后才能使用聊天功能
+3. 每个用户只能看到自己的对话历史
+4. 给我完整的集成步骤和关键代码
+5. 解释 JWT Token 是什么，为什么需要它`,
+        resources: [{ name: "Supabase Auth", url: "https://supabase.com/docs/guides/auth" }, { name: "Clerk（更简单）", url: "https://clerk.com/" }]
+      },
+      {
+        tag: "发布",
+        title: "上线、收集反馈、快速迭代",
+        desc: "把产品发给5个真实用户，观察他们怎么用，记录他们遇到的问题。然后用 AI 快速修复，一周内发布新版本。这个循环比任何教程都有价值。",
+        prompt: `我做了一个 AI 聊天工具，想收集用户反馈来改进产品。
+帮我设计一个反馈收集方案：
+1. 在界面里加一个简单的"点赞/踩"反馈按钮（给我代码）
+2. 帮我设计5个问用户的关键问题（用于问卷或用户访谈）
+3. 我应该关注哪些数据指标来判断产品是否有价值？
+4. 根据用户反馈，如何用 AI 快速决定下一步优先做什么功能？`,
+        resources: [{ name: "Product Hunt 发布", url: "https://www.producthunt.com/" }, { name: "Indie Hackers 社区", url: "https://www.indiehackers.com/" }]
+      }
+    ]
+  }
+];
+
+const tips = [
+  "💬 给 AI 的每条指令都要包含：背景 + 目标 + 约束条件 + 期望格式",
+  "🔁 每次让 AI 写代码后，让它解释关键部分——这比看文档学得快10倍",
+  "📸 用截图给 AI 看报错界面，比粘贴文字描述更准确",
+  "🧩 复杂功能先问：'把这个功能拆成3个独立的小任务'",
+  "📝 每天用5分钟记录：今天学了什么、卡在哪里、明天要做什么",
+];
+
+let activePhase = 1;
+let completed = {};
+let expanded = {};
+const totalSteps = phases.reduce((a, p) => a + p.steps.length, 0);
+
+function updateProgress() {
+  const count = Object.values(completed).filter(Boolean).length;
+  const pct = Math.round((count / totalSteps) * 100);
+  document.getElementById("prog-label").textContent = `已完成 ${count} / ${totalSteps} 步`;
+  document.getElementById("prog-pct").textContent = `${pct}%`;
+  document.getElementById("prog-fill").style.width = pct + "%";
+}
+
+function renderTabs() {
+  document.getElementById("tabs").innerHTML = phases.map(p => `
+    <button class="tab-btn ${p.id === activePhase ? 'active' : ''}"
+      style="${p.id === activePhase ? `border-bottom-color:${p.color};color:${p.color}` : ''}"
+      onclick="switchPhase(${p.id})">
+      阶段 ${p.id}
+    </button>
+  `).join("");
+}
+
+function renderContent() {
+  const phase = phases.find(p => p.id === activePhase);
+  document.getElementById("content").innerHTML = `
+    <div class="phase-header">
+      <div class="phase-eyebrow" style="color:${phase.color}">${phase.eyebrow}</div>
+      <div class="phase-title">${phase.title}</div>
+      <div class="phase-desc">${phase.desc}</div>
+    </div>
+    <div class="mindset-banner">${phase.mindset}</div>
+    <div class="phase-divider"></div>
+    <div class="steps">
+      ${phase.steps.map((step, i) => {
+        const key = `${phase.id}-${i}`;
+        const isDone = !!completed[key];
+        const isOpen = !!expanded[key];
+        return `
+          <div class="step-card ${isDone ? 'done' : ''}" id="card-${key}">
+            <div class="step-header" onclick="toggleExpand('${key}')">
+              <button class="step-check ${isDone ? 'checked' : ''}" id="check-${key}"
+                onclick="event.stopPropagation(); toggleDone('${key}')">
+                ${isDone ? '✓' : ''}
+              </button>
+              <div class="step-meta">
+                <div class="step-tag" style="color:${phase.color}">${step.tag}</div>
+                <div class="step-title ${isDone ? 'done-text' : ''}" id="title-${key}">${step.title}</div>
+              </div>
+              <span class="step-toggle ${isOpen ? 'open' : ''}" id="arrow-${key}">▼</span>
+            </div>
+            <div class="step-body ${isOpen ? 'open' : ''}" id="body-${key}">
+              <p class="step-desc">${step.desc}</p>
+              <div class="prompt-box">
+                <div class="prompt-label">📋 给 Claude / Cursor 的指令模板</div>
+                <div class="prompt-text">${step.prompt}</div>
+              </div>
+              <div class="resources">
+                ${step.resources.map(r => `<a class="resource-tag" href="${r.url}" target="_blank" rel="noopener">🔗 ${r.name}</a>`).join('')}
+              </div>
+            </div>
+          </div>`;
+      }).join('')}
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="switchPhase(${activePhase - 1})" ${activePhase === 1 ? 'disabled' : ''}>← 上一阶段</button>
+      <button class="nav-btn primary"
+        style="background:${activePhase === 4 ? '#1a1a2e' : phase.color};color:${activePhase === 4 ? '#444' : '#000'}"
+        onclick="switchPhase(${activePhase + 1})" ${activePhase === 4 ? 'disabled' : ''}>下一阶段 →</button>
+    </div>
+    <div class="tips">
+      <div class="tips-header"><div class="tips-title">AI 指挥官核心法则</div></div>
+      <div class="tips-body">${tips.map(t => `<div class="tip">${t}</div>`).join('')}</div>
+    </div>
+  `;
+}
+
+function switchPhase(id) {
+  if (id < 1 || id > 4) return;
+  activePhase = id;
+  renderTabs();
+  renderContent();
+}
+
+function toggleExpand(key) {
+  expanded[key] = !expanded[key];
+  document.getElementById("body-" + key).classList.toggle("open", expanded[key]);
+  document.getElementById("arrow-" + key).classList.toggle("open", expanded[key]);
+}
+
+function toggleDone(key) {
+  completed[key] = !completed[key];
+  const isDone = completed[key];
+  document.getElementById("card-" + key).classList.toggle("done", isDone);
+  const check = document.getElementById("check-" + key);
+  check.classList.toggle("checked", isDone);
+  check.textContent = isDone ? "✓" : "";
+  document.getElementById("title-" + key).classList.toggle("done-text", isDone);
+  updateProgress();
+}
+
+renderTabs();
+renderContent();
+updateProgress();
+</script>
+</body>
+</html>
